@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Smart Plant Green House</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- ===== CSS (DIPERBARUI) ===== -->
+  <style>
+    body {
+      font-family: "Segoe UI", Arial, sans-serif;
+      background: linear-gradient(135deg, #e9f7e9, #f6fff6);
+      margin: 0;
+    }
+
+    /* ===== LOGIN ===== */
+    #loginForm {
+      background: white;
+      width: 360px;
+      margin: 120px auto;
+      padding: 40px;
+      border-radius: 20px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+      text-align: center;
+    }
+
+    #loginForm h2 {
+      color: #2e7d32;
+      margin-bottom: 20px;
+    }
+
+    input {
+      width: 100%;
+      padding: 12px;
+      margin-top: 12px;
+      border-radius: 10px;
+      border: 1px solid #ccc;
+      font-size: 14px;
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      margin-top: 20px;
+      border: none;
+      border-radius: 12px;
+      background: linear-gradient(90deg, #2e7d32, #8bc34a);
+      color: white;
+      font-weight: bold;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      opacity: 0.9;
+    }
+
+    /* ===== DASHBOARD ===== */
+    #dashboard {
+      display: none;
+    }
+
+    .topbar {
+      background: linear-gradient(90deg, #2e7d32, #8bc34a);
+      color: white;
+      padding: 25px;
+      font-size: 24px;
+      font-weight: bold;
+    }
+
+    .topbar small {
+      display: block;
+      font-size: 14px;
+      font-weight: normal;
+      margin-top: 5px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 20px;
+      padding: 30px;
+    }
+
+    .card {
+      background: white;
+      border-radius: 18px;
+      padding: 25px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12);
+      text-align: center;
+    }
+
+    .card h3 {
+      color: #2e7d32;
+      margin-bottom: 10px;
+    }
+
+    .value {
+      font-size: 34px;
+      font-weight: bold;
+      color: #2e7d32;
+    }
+
+    span {
+      margin-top: 8px;
+      display: block;
+      font-weight: bold;
+    }
+
+    .footer {
+      text-align: center;
+      padding-bottom: 30px;
+    }
+
+    .footer button {
+      width: 200px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- ===== LOGIN (AUTO ISI) ===== -->
+  <div id="loginForm">
+    <h2>🌱 Smart Plant Green House</h2>
+
+    <!-- AUTO EMAIL & PASSWORD -->
+    <input type="email" id="email" value="desygabriella@gmail.com">
+    <input type="password" id="password" value="Gabriella07">
+
+    <button id="loginBtn">Login</button>
+  </div>
+
+  <!-- ===== DASHBOARD ===== -->
+  <div id="dashboard">
+
+    <div class="topbar">
+      🌱 Smart Plant Green House
+      <small>Monitoring Kelembaban, Cahaya, dan Keamanan</small>
+    </div>
+
+    <div class="grid">
+
+      <div class="card">
+        <h3>💧 Kelembaban Tanah</h3>
+        <div class="value" id="soilMoisture">0 %</div>
+        <span id="soilStatus"></span>
+      </div>
+
+      <div class="card">
+        <h3>☀ Tingkat Cahaya</h3>
+        <div class="value" id="lightLevel">0 %</div>
+        <span id="lightStatus"></span>
+      </div>
+
+      <div class="card">
+        <h3>🚶 Gerakan (PIR)</h3>
+        <div class="value" id="motion">-</div>
+        <span id="motionStatus"></span>
+      </div>
+
+    </div>
+
+    <div class="footer">
+      <button id="logoutBtn">Logout</button>
+    </div>
+
+  </div>
+
+  <!-- ===== JAVASCRIPT (ASLI, TIDAK DIUBAH LOGIKANYA) ===== -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
+  import { getAuth, signInWithEmailAndPassword, signOut } 
+    from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
+  import { getDatabase, ref, onValue } 
+    from "https://www.gstatic.com/firebasejs/9.23.0/firebase-database.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyCcCKGnsybwjzJa1JQpDCLoxwdttpiqhtY",
+    authDomain: "iot-esp32-grace.firebaseapp.com",
+    databaseURL: "https://iot-esp32-grace-default-rtdb.asia-southeast1.firebasedatabase.app",
+    projectId: "iot-esp32-grace"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getDatabase(app);
+
+  loginBtn.onclick = () => {
+    signInWithEmailAndPassword(
+      auth,
+      email.value,
+      password.value
+    ).then(() => {
+      loginForm.style.display = "none";
+      dashboard.style.display = "block";
+      listenData();
+    }).catch(err => alert("Login gagal: " + err.message));
+  };
+
+  logoutBtn.onclick = () => {
+    signOut(auth).then(() => {
+      dashboard.style.display = "none";
+      loginForm.style.display = "block";
+    });
+  };
+
+  function listenData() {
+    const sensorRef = ref(db, "greenhouse/sensors");
+    onValue(sensorRef, snap => {
+      const d = snap.val() || {};
+      soilMoisture.innerText = (d.soilMoisture ?? 0) + " %";
+      lightLevel.innerText = (d.lightLevel ?? 0) + " %";
+      motion.innerText = d.motion ? "YA" : "TIDAK";
+    });
+  }
+</script>
+
+</body>
+
+</html>
