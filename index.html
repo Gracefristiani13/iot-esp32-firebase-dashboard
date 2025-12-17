@@ -1,27 +1,26 @@
 <!DOCTYPE html>
 <html lang="id">
-
 <head>
   <meta charset="UTF-8">
-  <title>Smart Plant Green House</title>
+  <title>Smart Home Dashboard</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <!-- ===== CSS (TEMA BIRU) ===== -->
+  <!-- ===== STYLE (BIRU) ===== -->
   <style>
     body {
-      font-family: "Segoe UI", Arial, sans-serif;
-      background: linear-gradient(135deg, #e3f2fd, #f0f8ff);
       margin: 0;
+      font-family: "Segoe UI", Arial, sans-serif;
+      background: linear-gradient(135deg, #e3f2fd, #bbdefb);
     }
 
     /* ===== LOGIN ===== */
     #loginForm {
-      background: white;
       width: 360px;
       margin: 120px auto;
+      background: white;
       padding: 40px;
-      border-radius: 20px;
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+      border-radius: 18px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.2);
       text-align: center;
     }
 
@@ -35,7 +34,7 @@
       padding: 12px;
       margin-top: 12px;
       border-radius: 10px;
-      border: 1px solid #90caf9;
+      border: 1px solid #ccc;
       font-size: 14px;
     }
 
@@ -47,8 +46,8 @@
       border-radius: 12px;
       background: linear-gradient(90deg, #1565c0, #42a5f5);
       color: white;
-      font-weight: bold;
       font-size: 16px;
+      font-weight: bold;
       cursor: pointer;
     }
 
@@ -72,8 +71,8 @@
     .topbar small {
       display: block;
       font-size: 14px;
-      font-weight: normal;
       margin-top: 5px;
+      font-weight: normal;
     }
 
     .grid {
@@ -85,10 +84,10 @@
 
     .card {
       background: white;
-      border-radius: 18px;
       padding: 25px;
-      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12);
+      border-radius: 18px;
       text-align: center;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.15);
     }
 
     .card h3 {
@@ -98,13 +97,6 @@
 
     .value {
       font-size: 34px;
-      font-weight: bold;
-      color: #1565c0;
-    }
-
-    span {
-      margin-top: 8px;
-      display: block;
       font-weight: bold;
       color: #0d47a1;
     }
@@ -122,108 +114,110 @@
 
 <body>
 
-  <!-- ===== LOGIN ===== -->
-  <div id="loginForm">
-    <h2>🏠 Smart Home Dashboard</h2>
+<!-- ===== LOGIN ===== -->
+<div id="loginForm">
+  <h2>🏠 Smart Home</h2>
+  <input type="email" id="email" placeholder="Email">
+  <input type="password" id="password" placeholder="Password">
+  <button id="loginBtn">Login</button>
+</div>
 
-    <input type="email" id="email" placeholder="Email">
-    <input type="password" id="password" placeholder="Password">
-
-    <button id="loginBtn">Login</button>
+<!-- ===== DASHBOARD ===== -->
+<div id="dashboard">
+  <div class="topbar">
+    🏠 Smart Home Dashboard
+    <small>Monitoring Sensor Realtime</small>
   </div>
 
-  <!-- ===== DASHBOARD ===== -->
-  <div id="dashboard">
-
-    <div class="topbar">
-      🏠 Smart Home
-      <small>Monitoring Sensor ESP32 Realtime</small>
+  <div class="grid">
+    <div class="card">
+      <h3>💡 Cahaya</h3>
+      <div class="value" id="light">0 %</div>
     </div>
 
-    <div class="grid">
-
-      <div class="card">
-        <h3>💧 Kelembaban Tanah</h3>
-        <div class="value" id="soilMoisture">0 %</div>
-        <span id="soilStatus">-</span>
-      </div>
-
-      <div class="card">
-        <h3>☀ Tingkat Cahaya</h3>
-        <div class="value" id="lightLevel">0 %</div>
-        <span id="lightStatus">-</span>
-      </div>
-
-      <div class="card">
-        <h3>🚶 Gerakan (PIR)</h3>
-        <div class="value" id="motion">-</div>
-        <span id="motionStatus">-</span>
-      </div>
-
+    <div class="card">
+      <h3>💧 Kelembaban Tanah</h3>
+      <div class="value" id="soil">0 %</div>
     </div>
 
-    <div class="footer">
-      <button id="logoutBtn">Logout</button>
+    <div class="card">
+      <h3>🚶 Gerakan</h3>
+      <div class="value" id="motion">-</div>
     </div>
 
+    <div class="card">
+      <h3>🔥 Api</h3>
+      <div class="value" id="flame">-</div>
+    </div>
+
+    <div class="card">
+      <h3>📦 Objek</h3>
+      <div class="value" id="object">-</div>
+    </div>
   </div>
 
-  <!-- ===== FIREBASE SCRIPT (SESUAI PROJECT KAMU) ===== -->
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
-    import { getAuth, signInWithEmailAndPassword, signOut }
-      from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
-    import { getDatabase, ref, onValue }
-      from "https://www.gstatic.com/firebasejs/9.23.0/firebase-database.js";
+  <div class="footer">
+    <button id="logoutBtn">Logout</button>
+  </div>
+</div>
 
-    const firebaseConfig = {
-      apiKey: "AIzaSyCcCKGnsybwjzJa1JQpDCLoxwdttpiqhtY",
-      authDomain: "iot-esp32-grace.firebaseapp.com",
-      databaseURL: "https://iot-esp32-grace-default-rtdb.asia-southeast1.firebasedatabase.app",
-      projectId: "iot-esp32-grace"
-    };
+<!-- ===== FIREBASE SCRIPT ===== -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
+  import { getAuth, signInWithEmailAndPassword, signOut } 
+    from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
+  import { getDatabase, ref, onValue } 
+    from "https://www.gstatic.com/firebasejs/9.23.0/firebase-database.js";
 
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const db = getDatabase(app);
+  // 🔥 FIREBASE CONFIG (PUNYA KAMU)
+  const firebaseConfig = {
+    apiKey: "AIzaSyCcCKGnsybwjzJa1JQpDCLoxwdttpiqhtY",
+    authDomain: "iot-esp32-grace.firebaseapp.com",
+    databaseURL: "https://iot-esp32-grace-default-rtdb.asia-southeast1.firebasedatabase.app",
+    projectId: "iot-esp32-grace",
+    storageBucket: "iot-esp32-grace.firebasestorage.app",
+    messagingSenderId: "683717669724",
+    appId: "1:683717669724:web:84bd477fd754801c6c4799"
+  };
 
-    const loginForm = document.getElementById("loginForm");
-    const dashboard = document.getElementById("dashboard");
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getDatabase(app);
 
-    loginBtn.onclick = () => {
-      signInWithEmailAndPassword(auth, email.value, password.value)
-        .then(() => {
-          loginForm.style.display = "none";
-          dashboard.style.display = "block";
-          listenData();
-        })
-        .catch(err => alert("Login gagal: " + err.message));
-    };
+  // ===== LOGIN =====
+  loginBtn.onclick = () => {
+    signInWithEmailAndPassword(auth, email.value, password.value)
+      .then(() => {
+        loginForm.style.display = "none";
+        dashboard.style.display = "block";
+        listenData();
+      })
+      .catch(err => alert("Login gagal: " + err.message));
+  };
 
-    logoutBtn.onclick = () => {
-      signOut(auth).then(() => {
-        dashboard.style.display = "none";
-        loginForm.style.display = "block";
-      });
-    };
+  // ===== LOGOUT =====
+  logoutBtn.onclick = () => {
+    signOut(auth).then(() => {
+      dashboard.style.display = "none";
+      loginForm.style.display = "block";
+    });
+  };
 
-    function listenData() {
-      const sensorRef = ref(db, "greenhouse/sensors");
+  // ===== LISTEN FIREBASE DATA =====
+  function listenData() {
+    const sensorRef = ref(db, "greenhouse/sensors");
 
-      onValue(sensorRef, snapshot => {
-        const d = snapshot.val() || {};
+    onValue(sensorRef, snap => {
+      const d = snap.val() || {};
 
-        soilMoisture.innerText = (d.soilMoisture ?? 0) + " %";
-        soilStatus.innerText = d.soilMoisture < 40 ? "Kering" : "Cukup";
-
-        lightLevel.innerText = (d.lightLevel ?? 0) + " %";
-        lightStatus.innerText = d.lightLevel < 40 ? "Redup" : "Terang";
-
-        motion.innerText = d.motion ? "YA" : "TIDAK";
-        motionStatus.innerText = d.motion ? "Ada Gerakan" : "Aman";
-      });
-    }
-  </script>
+      light.innerText  = (d.light ?? 0) + " %";
+      soil.innerText   = (d.soil ?? 0) + " %";
+      motion.innerText = d.motion ? "TERDETEKSI" : "AMAN";
+      flame.innerText  = d.flame ? "TERDETEKSI" : "AMAN";
+      object.innerText = d.object ? "ADA" : "TIDAK";
+    });
+  }
+</script>
 
 </body>
 </html>
