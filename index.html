@@ -6,11 +6,11 @@
   <title>Smart Plant Green House</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <!-- ===== CSS (DIPERBARUI) ===== -->
+  <!-- ===== CSS (TEMA BIRU) ===== -->
   <style>
     body {
       font-family: "Segoe UI", Arial, sans-serif;
-      background: linear-gradient(135deg, #e9f7e9, #f6fff6);
+      background: linear-gradient(135deg, #e3f2fd, #f0f8ff);
       margin: 0;
     }
 
@@ -26,7 +26,7 @@
     }
 
     #loginForm h2 {
-      color: #2e7d32;
+      color: #1565c0;
       margin-bottom: 20px;
     }
 
@@ -35,7 +35,7 @@
       padding: 12px;
       margin-top: 12px;
       border-radius: 10px;
-      border: 1px solid #ccc;
+      border: 1px solid #90caf9;
       font-size: 14px;
     }
 
@@ -45,7 +45,7 @@
       margin-top: 20px;
       border: none;
       border-radius: 12px;
-      background: linear-gradient(90deg, #2e7d32, #8bc34a);
+      background: linear-gradient(90deg, #1565c0, #42a5f5);
       color: white;
       font-weight: bold;
       font-size: 16px;
@@ -62,7 +62,7 @@
     }
 
     .topbar {
-      background: linear-gradient(90deg, #2e7d32, #8bc34a);
+      background: linear-gradient(90deg, #1565c0, #42a5f5);
       color: white;
       padding: 25px;
       font-size: 24px;
@@ -92,20 +92,21 @@
     }
 
     .card h3 {
-      color: #2e7d32;
+      color: #1565c0;
       margin-bottom: 10px;
     }
 
     .value {
       font-size: 34px;
       font-weight: bold;
-      color: #2e7d32;
+      color: #1565c0;
     }
 
     span {
       margin-top: 8px;
       display: block;
       font-weight: bold;
+      color: #0d47a1;
     }
 
     .footer {
@@ -121,13 +122,12 @@
 
 <body>
 
-  <!-- ===== LOGIN (AUTO ISI) ===== -->
+  <!-- ===== LOGIN ===== -->
   <div id="loginForm">
-    <h2>🌱 Smart Plant Green House</h2>
+    <h2>🏠 Smart Home Dashboard</h2>
 
-    <!-- AUTO EMAIL & PASSWORD -->
-    <input type="email" id="email" value="desygabriella@gmail.com">
-    <input type="password" id="password" value="Gabriella07">
+    <input type="email" id="email" placeholder="Email">
+    <input type="password" id="password" placeholder="Password">
 
     <button id="loginBtn">Login</button>
   </div>
@@ -136,8 +136,8 @@
   <div id="dashboard">
 
     <div class="topbar">
-      🌱 Smart Plant Green House
-      <small>Monitoring Kelembaban, Cahaya, dan Keamanan</small>
+      🏠 Smart Home
+      <small>Monitoring Sensor ESP32 Realtime</small>
     </div>
 
     <div class="grid">
@@ -145,19 +145,19 @@
       <div class="card">
         <h3>💧 Kelembaban Tanah</h3>
         <div class="value" id="soilMoisture">0 %</div>
-        <span id="soilStatus"></span>
+        <span id="soilStatus">-</span>
       </div>
 
       <div class="card">
         <h3>☀ Tingkat Cahaya</h3>
         <div class="value" id="lightLevel">0 %</div>
-        <span id="lightStatus"></span>
+        <span id="lightStatus">-</span>
       </div>
 
       <div class="card">
         <h3>🚶 Gerakan (PIR)</h3>
         <div class="value" id="motion">-</div>
-        <span id="motionStatus"></span>
+        <span id="motionStatus">-</span>
       </div>
 
     </div>
@@ -168,55 +168,62 @@
 
   </div>
 
-  <!-- ===== JAVASCRIPT (ASLI, TIDAK DIUBAH LOGIKANYA) ===== -->
-<script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
-  import { getAuth, signInWithEmailAndPassword, signOut } 
-    from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
-  import { getDatabase, ref, onValue } 
-    from "https://www.gstatic.com/firebasejs/9.23.0/firebase-database.js";
+  <!-- ===== FIREBASE SCRIPT (SESUAI PROJECT KAMU) ===== -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
+    import { getAuth, signInWithEmailAndPassword, signOut }
+      from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
+    import { getDatabase, ref, onValue }
+      from "https://www.gstatic.com/firebasejs/9.23.0/firebase-database.js";
 
-  const firebaseConfig = {
-    apiKey: "AIzaSyCcCKGnsybwjzJa1JQpDCLoxwdttpiqhtY",
-    authDomain: "iot-esp32-grace.firebaseapp.com",
-    databaseURL: "https://iot-esp32-grace-default-rtdb.asia-southeast1.firebasedatabase.app",
-    projectId: "iot-esp32-grace"
-  };
+    const firebaseConfig = {
+      apiKey: "AIzaSyCcCKGnsybwjzJa1JQpDCLoxwdttpiqhtY",
+      authDomain: "iot-esp32-grace.firebaseapp.com",
+      databaseURL: "https://iot-esp32-grace-default-rtdb.asia-southeast1.firebasedatabase.app",
+      projectId: "iot-esp32-grace"
+    };
 
-  const app = initializeApp(firebaseConfig);
-  const auth = getAuth(app);
-  const db = getDatabase(app);
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getDatabase(app);
 
-  loginBtn.onclick = () => {
-    signInWithEmailAndPassword(
-      auth,
-      email.value,
-      password.value
-    ).then(() => {
-      loginForm.style.display = "none";
-      dashboard.style.display = "block";
-      listenData();
-    }).catch(err => alert("Login gagal: " + err.message));
-  };
+    const loginForm = document.getElementById("loginForm");
+    const dashboard = document.getElementById("dashboard");
 
-  logoutBtn.onclick = () => {
-    signOut(auth).then(() => {
-      dashboard.style.display = "none";
-      loginForm.style.display = "block";
-    });
-  };
+    loginBtn.onclick = () => {
+      signInWithEmailAndPassword(auth, email.value, password.value)
+        .then(() => {
+          loginForm.style.display = "none";
+          dashboard.style.display = "block";
+          listenData();
+        })
+        .catch(err => alert("Login gagal: " + err.message));
+    };
 
-  function listenData() {
-    const sensorRef = ref(db, "greenhouse/sensors");
-    onValue(sensorRef, snap => {
-      const d = snap.val() || {};
-      soilMoisture.innerText = (d.soilMoisture ?? 0) + " %";
-      lightLevel.innerText = (d.lightLevel ?? 0) + " %";
-      motion.innerText = d.motion ? "YA" : "TIDAK";
-    });
-  }
-</script>
+    logoutBtn.onclick = () => {
+      signOut(auth).then(() => {
+        dashboard.style.display = "none";
+        loginForm.style.display = "block";
+      });
+    };
+
+    function listenData() {
+      const sensorRef = ref(db, "greenhouse/sensors");
+
+      onValue(sensorRef, snapshot => {
+        const d = snapshot.val() || {};
+
+        soilMoisture.innerText = (d.soilMoisture ?? 0) + " %";
+        soilStatus.innerText = d.soilMoisture < 40 ? "Kering" : "Cukup";
+
+        lightLevel.innerText = (d.lightLevel ?? 0) + " %";
+        lightStatus.innerText = d.lightLevel < 40 ? "Redup" : "Terang";
+
+        motion.innerText = d.motion ? "YA" : "TIDAK";
+        motionStatus.innerText = d.motion ? "Ada Gerakan" : "Aman";
+      });
+    }
+  </script>
 
 </body>
-
 </html>
