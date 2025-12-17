@@ -2,157 +2,216 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8">
-  <title>Smart Home Dashboard</title>
+  <title>Smart Greenhouse Dashboard</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <!-- ===== STYLE (BIRU) ===== -->
+  <!-- ===== GOOGLE FONT ===== -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+  <!-- ===== STYLE ===== -->
   <style>
-    body {
-      margin: 0;
-      font-family: "Segoe UI", Arial, sans-serif;
-      background: linear-gradient(135deg, #e3f2fd, #bbdefb);
+    * {
+      box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
     }
 
-    /* ===== LOGIN ===== */
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: linear-gradient(135deg, #0d47a1, #1976d2, #42a5f5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* ================= LOGIN ================= */
     #loginForm {
       width: 360px;
-      margin: 120px auto;
-      background: white;
+      background: rgba(255,255,255,0.95);
       padding: 40px;
-      border-radius: 18px;
-      box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+      border-radius: 22px;
+      box-shadow: 0 30px 60px rgba(0,0,0,0.35);
       text-align: center;
+      animation: fadeIn 0.8s ease;
     }
 
     #loginForm h2 {
-      color: #1565c0;
-      margin-bottom: 20px;
+      margin-bottom: 8px;
+      color: #0d47a1;
+    }
+
+    #loginForm p {
+      margin-top: 0;
+      margin-bottom: 25px;
+      color: #555;
+      font-size: 14px;
     }
 
     input {
       width: 100%;
-      padding: 12px;
-      margin-top: 12px;
-      border-radius: 10px;
-      border: 1px solid #ccc;
+      padding: 14px;
+      margin-top: 14px;
+      border-radius: 12px;
+      border: 1px solid #ddd;
       font-size: 14px;
+      outline: none;
+    }
+
+    input:focus {
+      border-color: #1976d2;
     }
 
     button {
       width: 100%;
-      padding: 12px;
-      margin-top: 20px;
+      padding: 14px;
+      margin-top: 24px;
       border: none;
-      border-radius: 12px;
+      border-radius: 14px;
       background: linear-gradient(90deg, #1565c0, #42a5f5);
       color: white;
       font-size: 16px;
-      font-weight: bold;
+      font-weight: 600;
       cursor: pointer;
+      transition: 0.3s;
     }
 
     button:hover {
-      opacity: 0.9;
+      transform: translateY(-2px);
+      box-shadow: 0 12px 25px rgba(0,0,0,0.25);
     }
 
-    /* ===== DASHBOARD ===== */
+    /* ================= DASHBOARD ================= */
     #dashboard {
       display: none;
+      width: 100%;
+      min-height: 100vh;
+      color: white;
+      animation: fadeIn 0.8s ease;
     }
 
     .topbar {
-      background: linear-gradient(90deg, #1565c0, #42a5f5);
-      color: white;
-      padding: 25px;
-      font-size: 24px;
-      font-weight: bold;
+      padding: 30px;
+      background: rgba(255,255,255,0.15);
+      backdrop-filter: blur(10px);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+    }
+
+    .topbar h1 {
+      margin: 0;
+      font-size: 28px;
+      font-weight: 700;
     }
 
     .topbar small {
-      display: block;
       font-size: 14px;
-      margin-top: 5px;
-      font-weight: normal;
+      opacity: 0.9;
     }
 
     .grid {
+      padding: 35px;
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-      gap: 20px;
-      padding: 30px;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 25px;
     }
 
     .card {
-      background: white;
-      padding: 25px;
-      border-radius: 18px;
+      background: rgba(255,255,255,0.9);
+      color: #0d47a1;
+      border-radius: 22px;
+      padding: 30px 25px;
       text-align: center;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.25);
+      transition: 0.3s;
+    }
+
+    .card:hover {
+      transform: translateY(-6px);
     }
 
     .card h3 {
-      color: #1565c0;
+      margin: 0;
+      font-size: 18px;
       margin-bottom: 10px;
     }
 
     .value {
-      font-size: 34px;
-      font-weight: bold;
-      color: #0d47a1;
+      font-size: 38px;
+      font-weight: 700;
+      margin-top: 8px;
+    }
+
+    .status {
+      margin-top: 8px;
+      font-size: 14px;
+      opacity: 0.8;
     }
 
     .footer {
       text-align: center;
-      padding-bottom: 30px;
+      padding-bottom: 40px;
     }
 
     .footer button {
-      width: 200px;
+      width: 220px;
+      background: linear-gradient(90deg, #0d47a1, #1976d2);
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(15px); }
+      to   { opacity: 1; transform: translateY(0); }
     }
   </style>
 </head>
 
 <body>
 
-<!-- ===== LOGIN ===== -->
+<!-- ================= LOGIN ================= -->
 <div id="loginForm">
-  <h2>🏠 Smart Home</h2>
+  <h2>🌱 Smart Greenhouse</h2>
+  <p>Login untuk monitoring sensor</p>
+
   <input type="email" id="email" placeholder="Email">
   <input type="password" id="password" placeholder="Password">
+
   <button id="loginBtn">Login</button>
 </div>
 
-<!-- ===== DASHBOARD ===== -->
+<!-- ================= DASHBOARD ================= -->
 <div id="dashboard">
   <div class="topbar">
-    🏠 Smart Home Dashboard
-    <small>Monitoring Sensor Realtime</small>
+    <h1>📊 Smart Greenhouse Dashboard</h1>
+    <small>Monitoring Realtime Berbasis IoT</small>
   </div>
 
   <div class="grid">
     <div class="card">
-      <h3>💡 Cahaya</h3>
-      <div class="value" id="light">0 %</div>
+      <h3>💡 Intensitas Cahaya</h3>
+      <div class="value" id="light">0%</div>
+      <div class="status">LDR Sensor</div>
     </div>
 
     <div class="card">
       <h3>💧 Kelembaban Tanah</h3>
-      <div class="value" id="soil">0 %</div>
+      <div class="value" id="soil">0%</div>
+      <div class="status">Soil Moisture</div>
     </div>
 
     <div class="card">
       <h3>🚶 Gerakan</h3>
       <div class="value" id="motion">-</div>
+      <div class="status">PIR Sensor</div>
     </div>
 
     <div class="card">
       <h3>🔥 Api</h3>
       <div class="value" id="flame">-</div>
+      <div class="status">Flame Sensor</div>
     </div>
 
     <div class="card">
       <h3>📦 Objek</h3>
       <div class="value" id="object">-</div>
+      <div class="status">Object Detector</div>
     </div>
   </div>
 
@@ -161,7 +220,7 @@
   </div>
 </div>
 
-<!-- ===== FIREBASE SCRIPT ===== -->
+<!-- ================= FIREBASE ================= -->
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
   import { getAuth, signInWithEmailAndPassword, signOut } 
@@ -169,7 +228,6 @@
   import { getDatabase, ref, onValue } 
     from "https://www.gstatic.com/firebasejs/9.23.0/firebase-database.js";
 
-  // 🔥 FIREBASE CONFIG (PUNYA KAMU)
   const firebaseConfig = {
     apiKey: "AIzaSyCcCKGnsybwjzJa1JQpDCLoxwdttpiqhtY",
     authDomain: "iot-esp32-grace.firebaseapp.com",
@@ -184,7 +242,6 @@
   const auth = getAuth(app);
   const db = getDatabase(app);
 
-  // ===== LOGIN =====
   loginBtn.onclick = () => {
     signInWithEmailAndPassword(auth, email.value, password.value)
       .then(() => {
@@ -195,7 +252,6 @@
       .catch(err => alert("Login gagal: " + err.message));
   };
 
-  // ===== LOGOUT =====
   logoutBtn.onclick = () => {
     signOut(auth).then(() => {
       dashboard.style.display = "none";
@@ -203,15 +259,12 @@
     });
   };
 
-  // ===== LISTEN FIREBASE DATA =====
   function listenData() {
     const sensorRef = ref(db, "greenhouse/sensors");
-
     onValue(sensorRef, snap => {
       const d = snap.val() || {};
-
-      light.innerText  = (d.light ?? 0) + " %";
-      soil.innerText   = (d.soil ?? 0) + " %";
+      light.innerText  = (d.lightLevel ?? 0) + "%";
+      soil.innerText   = (d.soilMoisture ?? 0) + "%";
       motion.innerText = d.motion ? "TERDETEKSI" : "AMAN";
       flame.innerText  = d.flame ? "TERDETEKSI" : "AMAN";
       object.innerText = d.object ? "ADA" : "TIDAK";
