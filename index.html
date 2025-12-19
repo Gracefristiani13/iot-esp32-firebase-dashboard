@@ -26,12 +26,6 @@
       backdrop-filter: blur(10px);
     }
 
-    .topbar h1 {
-      margin: 0;
-      font-size: 28px;
-      font-weight: 700;
-    }
-
     .grid {
       padding: 35px;
       display: grid;
@@ -48,20 +42,36 @@
       box-shadow: 0 20px 40px rgba(0,0,0,0.25);
     }
 
-    .card h3 {
-      margin: 0;
-      font-size: 18px;
-    }
-
     .value {
       font-size: 40px;
       font-weight: 700;
-      margin-top: 10px;
     }
 
-    .status {
-      font-size: 14px;
-      opacity: 0.7;
+    #loginBox {
+      padding: 40px;
+      max-width: 360px;
+      margin: 60px auto;
+      background: rgba(255,255,255,0.15);
+      border-radius: 20px;
+      text-align: center;
+    }
+
+    input {
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0;
+      border-radius: 10px;
+      border: none;
+    }
+
+    button {
+      padding: 12px 20px;
+      border-radius: 10px;
+      border: none;
+      background: #fff;
+      color: #0d47a1;
+      font-weight: 600;
+      cursor: pointer;
     }
   </style>
 </head>
@@ -73,58 +83,73 @@
   <small>ESP32 + Firebase Realtime Database</small>
 </div>
 
-<div class="grid">
+<!-- LOGIN -->
+<div id="loginBox">
+  <h3>Login Firebase</h3>
+  <input id="email" placeholder="Email">
+  <input id="password" type="password" placeholder="Password">
+  <button onclick="login()">Login</button>
+</div>
+
+<!-- DASHBOARD -->
+<div class="grid" id="dashboard" style="display:none;">
   <div class="card">
     <h3>💡 Intensitas Cahaya</h3>
     <div class="value" id="light">-- %</div>
-    <div class="status">LDR Sensor</div>
   </div>
 
   <div class="card">
     <h3>🌡️ Suhu</h3>
     <div class="value" id="temp">-- °C</div>
-    <div class="status">DHT22</div>
   </div>
 
   <div class="card">
     <h3>💧 Kelembapan</h3>
     <div class="value" id="hum">-- %</div>
-    <div class="status">DHT22</div>
   </div>
 
   <div class="card">
     <h3>🚶 Gerakan</h3>
     <div class="value" id="motion">--</div>
-    <div class="status">PIR Sensor</div>
   </div>
 </div>
 
 <!-- FIREBASE -->
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 
 <script>
-  // 🔥 CONFIG FIREBASE (PUNYAMU)
   const firebaseConfig = {
     apiKey: "AIzaSyCifJZb1HgoGSIKzExkR77A4wPETbj7Ng8",
     databaseURL: "https://iot-m13-default-rtdb.asia-southeast1.firebasedatabase.app"
   };
 
   firebase.initializeApp(firebaseConfig);
+
+  const auth = firebase.auth();
   const db = firebase.database();
 
-  // 🔥 PATH HARUS SAMA DENGAN ESP32
-  const sensorRef = db.ref("iot/sensor");
+  function login() {
+    auth.signInWithEmailAndPassword(
+      email.value,
+      password.value
+    ).then(() => {
+      document.getElementById("loginBox").style.display = "none";
+      document.getElementById("dashboard").style.display = "grid";
 
-  sensorRef.on("value", (snapshot) => {
-    const data = snapshot.val();
-    if (data) {
-      document.getElementById("light").innerText = data.light + " %";
-      document.getElementById("temp").innerText = data.temperature + " °C";
-      document.getElementById("hum").innerText = data.humidity + " %";
-      document.getElementById("motion").innerText = data.motion ? "TERDETEKSI" : "AMAN";
-    }
-  });
+      const ref = db.ref("iot/sensor");
+      ref.on("value", snap => {
+        const d = snap.val();
+        if (!d) return;
+
+        light.innerText = d.light + " %";
+        temp.innerText = d.temperature + " °C";
+        hum.innerText = d.humidity + " %";
+        motion.innerText = d.motion ? "TERDETEKSI" : "AMAN";
+      });
+    }).catch(err => alert(err.message));
+  }
 </script>
 
 </body>
