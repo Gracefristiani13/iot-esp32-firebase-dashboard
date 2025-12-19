@@ -2,13 +2,11 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8">
-  <title>Smart Greenhouse Dashboard</title>
+  <title>IoT Sensor Dashboard</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <!-- ===== GOOGLE FONT ===== -->
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
 
-  <!-- ===== STYLE ===== -->
   <style>
     * {
       box-sizing: border-box;
@@ -19,92 +17,19 @@
       margin: 0;
       min-height: 100vh;
       background: linear-gradient(135deg, #0d47a1, #1976d2, #42a5f5);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    /* ================= LOGIN ================= */
-    #loginForm {
-      width: 360px;
-      background: rgba(255,255,255,0.95);
-      padding: 40px;
-      border-radius: 22px;
-      box-shadow: 0 30px 60px rgba(0,0,0,0.35);
-      text-align: center;
-      animation: fadeIn 0.8s ease;
-    }
-
-    #loginForm h2 {
-      margin-bottom: 8px;
-      color: #0d47a1;
-    }
-
-    #loginForm p {
-      margin-top: 0;
-      margin-bottom: 25px;
-      color: #555;
-      font-size: 14px;
-    }
-
-    input {
-      width: 100%;
-      padding: 14px;
-      margin-top: 14px;
-      border-radius: 12px;
-      border: 1px solid #ddd;
-      font-size: 14px;
-      outline: none;
-    }
-
-    input:focus {
-      border-color: #1976d2;
-    }
-
-    button {
-      width: 100%;
-      padding: 14px;
-      margin-top: 24px;
-      border: none;
-      border-radius: 14px;
-      background: linear-gradient(90deg, #1565c0, #42a5f5);
       color: white;
-      font-size: 16px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: 0.3s;
-    }
-
-    button:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 12px 25px rgba(0,0,0,0.25);
-    }
-
-    /* ================= DASHBOARD ================= */
-    #dashboard {
-      display: none;
-      width: 100%;
-      min-height: 100vh;
-      color: white;
-      animation: fadeIn 0.8s ease;
     }
 
     .topbar {
       padding: 30px;
       background: rgba(255,255,255,0.15);
       backdrop-filter: blur(10px);
-      box-shadow: 0 10px 30px rgba(0,0,0,0.25);
     }
 
     .topbar h1 {
       margin: 0;
       font-size: 28px;
       font-weight: 700;
-    }
-
-    .topbar small {
-      font-size: 14px;
-      opacity: 0.9;
     }
 
     .grid {
@@ -115,161 +40,91 @@
     }
 
     .card {
-      background: rgba(255,255,255,0.9);
+      background: rgba(255,255,255,0.95);
       color: #0d47a1;
       border-radius: 22px;
-      padding: 30px 25px;
+      padding: 30px;
       text-align: center;
       box-shadow: 0 20px 40px rgba(0,0,0,0.25);
-      transition: 0.3s;
-    }
-
-    .card:hover {
-      transform: translateY(-6px);
     }
 
     .card h3 {
       margin: 0;
       font-size: 18px;
-      margin-bottom: 10px;
     }
 
     .value {
-      font-size: 38px;
+      font-size: 40px;
       font-weight: 700;
-      margin-top: 8px;
+      margin-top: 10px;
     }
 
     .status {
-      margin-top: 8px;
       font-size: 14px;
-      opacity: 0.8;
-    }
-
-    .footer {
-      text-align: center;
-      padding-bottom: 40px;
-    }
-
-    .footer button {
-      width: 220px;
-      background: linear-gradient(90deg, #0d47a1, #1976d2);
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(15px); }
-      to   { opacity: 1; transform: translateY(0); }
+      opacity: 0.7;
     }
   </style>
 </head>
 
 <body>
 
-<!-- ================= LOGIN ================= -->
-<div id="loginForm">
-  <h2>🌱 Smart Greenhouse</h2>
-  <p>Login untuk monitoring sensor</p>
-
-  <input type="email" id="email" placeholder="Email">
-  <input type="password" id="password" placeholder="Password">
-
-  <button id="loginBtn">Login</button>
+<div class="topbar">
+  <h1>📊 IoT Sensor Dashboard</h1>
+  <small>ESP32 + Firebase Realtime Database</small>
 </div>
 
-<!-- ================= DASHBOARD ================= -->
-<div id="dashboard">
-  <div class="topbar">
-    <h1>📊 Smart Greenhouse Dashboard</h1>
-    <small>Monitoring Realtime Berbasis IoT</small>
+<div class="grid">
+  <div class="card">
+    <h3>💡 Intensitas Cahaya</h3>
+    <div class="value" id="light">-- %</div>
+    <div class="status">LDR Sensor</div>
   </div>
 
-  <div class="grid">
-    <div class="card">
-      <h3>💡 Intensitas Cahaya</h3>
-      <div class="value" id="light">0%</div>
-      <div class="status">LDR Sensor</div>
-    </div>
-
-    <div class="card">
-      <h3>💧 Kelembaban Tanah</h3>
-      <div class="value" id="soil">0%</div>
-      <div class="status">Soil Moisture</div>
-    </div>
-
-    <div class="card">
-      <h3>🚶 Gerakan</h3>
-      <div class="value" id="motion">-</div>
-      <div class="status">PIR Sensor</div>
-    </div>
-
-    <div class="card">
-      <h3>🔥 Api</h3>
-      <div class="value" id="flame">-</div>
-      <div class="status">Flame Sensor</div>
-    </div>
-
-    <div class="card">
-      <h3>📦 Objek</h3>
-      <div class="value" id="object">-</div>
-      <div class="status">Object Detector</div>
-    </div>
+  <div class="card">
+    <h3>🌡️ Suhu</h3>
+    <div class="value" id="temp">-- °C</div>
+    <div class="status">DHT22</div>
   </div>
 
-  <div class="footer">
-    <button id="logoutBtn">Logout</button>
+  <div class="card">
+    <h3>💧 Kelembapan</h3>
+    <div class="value" id="hum">-- %</div>
+    <div class="status">DHT22</div>
+  </div>
+
+  <div class="card">
+    <h3>🚶 Gerakan</h3>
+    <div class="value" id="motion">--</div>
+    <div class="status">PIR Sensor</div>
   </div>
 </div>
 
-<!-- ================= FIREBASE ================= -->
-<script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
-  import { getAuth, signInWithEmailAndPassword, signOut } 
-    from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
-  import { getDatabase, ref, onValue } 
-    from "https://www.gstatic.com/firebasejs/9.23.0/firebase-database.js";
+<!-- FIREBASE -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 
+<script>
+  // 🔥 CONFIG FIREBASE (PUNYAMU)
   const firebaseConfig = {
-    apiKey: "AIzaSyCcCKGnsybwjzJa1JQpDCLoxwdttpiqhtY",
-    authDomain: "iot-esp32-grace.firebaseapp.com",
-    databaseURL: "https://iot-esp32-grace-default-rtdb.asia-southeast1.firebasedatabase.app",
-    projectId: "iot-esp32-grace",
-    storageBucket: "iot-esp32-grace.firebasestorage.app",
-    messagingSenderId: "683717669724",
-    appId: "1:683717669724:web:84bd477fd754801c6c4799"
+    apiKey: "AIzaSyCifJZb1HgoGSIKzExkR77A4wPETbj7Ng8",
+    databaseURL: "https://iot-m13-default-rtdb.asia-southeast1.firebasedatabase.app"
   };
 
-  const app = initializeApp(firebaseConfig);
-  const auth = getAuth(app);
-  const db = getDatabase(app);
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.database();
 
-  loginBtn.onclick = () => {
-    signInWithEmailAndPassword(auth, email.value, password.value)
-      .then(() => {
-        loginForm.style.display = "none";
-        dashboard.style.display = "block";
-        listenData();
-      })
-      .catch(err => alert("Login gagal: " + err.message));
-  };
+  // 🔥 PATH HARUS SAMA DENGAN ESP32
+  const sensorRef = db.ref("iot/sensor");
 
-  logoutBtn.onclick = () => {
-    signOut(auth).then(() => {
-      dashboard.style.display = "none";
-      loginForm.style.display = "block";
-    });
-  };
-
-  function listenData() {
-    const sensorRef = ref(db, "greenhouse/sensors");
-    onValue(sensorRef, snap => {
-      const d = snap.val() || {};
-      light.innerText  = (d.lightLevel ?? 0) + "%";
-      soil.innerText   = (d.soilMoisture ?? 0) + "%";
-      motion.innerText = d.motion ? "TERDETEKSI" : "AMAN";
-      flame.innerText  = d.flame ? "TERDETEKSI" : "AMAN";
-      object.innerText = d.object ? "ADA" : "TIDAK";
-    });
-  }
+  sensorRef.on("value", (snapshot) => {
+    const data = snapshot.val();
+    if (data) {
+      document.getElementById("light").innerText = data.light + " %";
+      document.getElementById("temp").innerText = data.temperature + " °C";
+      document.getElementById("hum").innerText = data.humidity + " %";
+      document.getElementById("motion").innerText = data.motion ? "TERDETEKSI" : "AMAN";
+    }
+  });
 </script>
 
 </body>
